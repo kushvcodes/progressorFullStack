@@ -16,7 +16,6 @@ import Donate from "./pages/Donate";
 import Chat from "./pages/Chat";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
-import OnboardingTour from "./components/onboarding/OnboardingTour";
 import ProtectedRoute from "./providers/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -95,9 +94,11 @@ const AppRoutes = () => {
         </PageTransition>
       } />
       <Route path="/chat" element={
+        <ProtectedRoute>
         <PageTransition>
           <Chat />
         </PageTransition>
+        </ProtectedRoute>
       } />
       <Route path="/profile" element={
         <ProtectedRoute>

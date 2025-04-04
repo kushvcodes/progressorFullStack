@@ -1,28 +1,44 @@
 import { LucideIcon } from 'lucide-react';
 
-export type TaskStatus = 'completed' | 'in-progress' | 'pending';
-
-export type TaskPriority = 'high' | 'medium' | 'low';
-
-export type TaskView = 'list' | 'kanban' | 'calendar';
+export type TaskStatus = 'pending' | 'in_progress' | 'completed';
+export type TaskPriority = 'vl' | 'l' | 'n' | 'h' | 'vh';
+export type category = 'e' | 'f' | 'p' | 'h' | 's' | 'w';
 
 export interface TaskType {
   id: string;
+  user: string;
   title: string;
-  description: string;
+  description: string | null;
   status: TaskStatus;
-  dueDate: Date | null;
+  est_points: number;
+  est_time: number;
+  due_date: string | null;
+  start_date: string | null;
+  completed_date: string | null;
+  category: category;
   priority: TaskPriority;
-  tags: string[];
-  parentTaskId?: string | null; // For subtasks
-  subtasks?: string[]; // IDs of subtasks
-  collaborators?: string[]; // IDs of users who are collaborating on this task
-  estimatedTime?: number; // Estimated time in minutes
-  actualTime?: number; // Actual time spent in minutes
-  attachments?: string[]; // URLs or IDs of attachments
-  aiScore?: number; // AI-generated complexity score (0-100)
-  maxPoints?: number; // Maximum productivity points for the task
 }
+
+
+export type TaskView = 'list' | 'kanban' | 'calendar';
+
+// export interface TaskType {
+//   id: string;
+//   title: string;
+//   description: string;
+//   status: TaskStatus;
+//   dueDate: Date | null;
+//   priority: TaskPriority;
+//   tags: string[];
+//   parentTaskId?: string | null; // For subtasks
+//   subtasks?: string[]; // IDs of subtasks
+//   collaborators?: string[]; // IDs of users who are collaborating on this task
+//   estimatedTime?: number; // Estimated time in minutes
+//   actualTime?: number; // Actual time spent in minutes
+//   attachments?: string[]; // URLs or IDs of attachments
+//   aiScore?: number; // AI-generated complexity score (0-100)
+//   maxPoints?: number; // Maximum productivity points for the task
+// }
 
 export interface KanbanColumn {
   id: string;

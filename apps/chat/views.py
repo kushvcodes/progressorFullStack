@@ -1,28 +1,36 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+# apps/chat/views.py
+from rest_framework import generics, permissions
+from rest_framework.response import Response
 from .models import Message
+from .serializers import MessageSerializer
 from django.db.models import Q
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
-@login_required
-def chat(request):  # Accept 'room_name' as a parameter
-    search_query = request.GET.get('search', '') 
-    # Get messages where sender is the current user and receiver is AI, or vice versa
-    chats = Message.objects.filter(
-        Q(sender=request.user, receiver__username="AI") |  # User to AI
-        Q(sender__username="AI", receiver=request.user)   # AI to User
-    )
-    if search_query:
-        chats = chats.filter(Q(content__icontains=search_query))  
 
-    chats = chats.order_by('timestamp')
+class ChatHistoryAPI(generics.ListAPIView):
+    """API endpoint to fetch chat history between user and AI"""
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    # Get the most recent message from AI to the user
-    last_message = chats.last()
+    def get_queryset(self):
+        queryset = Message.objects.filter(
+            Q(sender=self.request.user, receiver__username="AI") |
+            Q(sender__username="AI", receiver=self.request.user)
+        ).order_by('timestamp')
+        
+        # Optional search filter
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            queryset = queryset.filter(content__icontains=search_query)
+            
+        return queryset
 
-    return render(request, 'chat.html', {
-        'chats': chats,
-        'last_message': last_message,
-        'search_query': search_query,
-    })
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        
+        return Response({
+            'messages': serializer.data,
+            'last_message': serializer.data[-1] if queryset.exists() else None
+        })

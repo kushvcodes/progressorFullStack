@@ -111,7 +111,7 @@ const Navbar = () => {
 };
 
 interface AccountMenuProps {
-  user: { name: string; email: string } | null;
+  user: { name?: string; email?: string } | null;
   onLogout: () => void;
 }
 
@@ -169,7 +169,7 @@ const AccountMenu: React.FC<AccountMenuProps> = ({ user, onLogout }) => {
 };
 
 interface MobileUserMenuProps {
-  user: { name: string; email: string } | null;
+  user: { name?: string; email?: string } | null;
   onLogout: () => void;
 }
 

@@ -26,18 +26,22 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     const nextStatus = task.status === 'completed' 
       ? 'pending' 
       : task.status === 'pending' 
-        ? 'in-progress' 
+        ? 'in_progress' // Changed from 'in-progress' to 'in_progress'
         : 'completed';
     
     onStatusChange(task.id, nextStatus);
   };
   
-  const formatDate = (date: Date | null) => {
+  const formatDate = (date: Date | string | null) => {
     if (!date) return '';
+    
+    // Convert string date to Date object if needed
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric'
-    }).format(date);
+    }).format(dateObj);
   };
   
   return (
@@ -72,17 +76,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({
           <div className="flex items-center mt-1 space-x-2 text-xs text-muted-foreground">
             <TaskStatusBadge status={task.status} size="xs" />
             
-            {task.dueDate && (
+            {task.due_date && (
               <span className="flex items-center">
                 <Clock size={12} className="mr-1" />
-                {formatDate(task.dueDate)}
+                {formatDate(task.due_date)}
               </span>
             )}
             
-            {task.maxPoints && (
+            {task.est_points && (
               <span className="flex items-center">
-                <Trophy size={12} className={cn("mr-1", getTrophyColor(task.maxPoints))} />
-                {task.maxPoints} pts
+                <Trophy size={12} className={cn("mr-1", getTrophyColor(task.est_points))} />
+                {task.est_points} pts
               </span>
             )}
           </div>

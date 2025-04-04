@@ -31,10 +31,10 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
         Pending
       </Button>
       <Button 
-        variant={activeFilter === 'in-progress' ? 'default' : 'ghost'} 
+        variant={activeFilter === 'in_progress' ? 'default' : 'ghost'} 
         size="sm" 
         className="text-xs font-normal" 
-        onClick={() => onFilterChange('in-progress')}
+        onClick={() => onFilterChange('in_progress')}
       >
         In Progress
       </Button>

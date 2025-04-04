@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { GlassCard } from '@/components/ui/glass-card';
 import { BarChart2, ListChecks, KanbanSquare } from 'lucide-react';
@@ -12,55 +11,23 @@ import { ProductivityAnalytics } from './ProductivityAnalytics';
 import { KanbanBoard } from './KanbanBoard';
 import { TaskType, TaskStatus } from '@/types/task';
 
-const SAMPLE_TASKS: TaskType[] = [
-  {
-    id: '1',
-    title: 'Complete project proposal',
-    description: 'Draft the initial proposal for the Q2 marketing campaign including budget breakdown and timeline.',
-    status: 'in-progress',
-    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-    priority: 'high',
-    tags: ['work', 'important'],
-    estimatedTime: 120,
-    maxPoints: 85
-  },
-  {
-    id: '2',
-    title: 'Review marketing materials',
-    description: 'Check the new brochures and social media assets for consistency and brand guidelines compliance.',
-    status: 'pending',
-    dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-    priority: 'medium',
-    tags: ['marketing'],
-    estimatedTime: 45,
-    maxPoints: 40
-  },
-  {
-    id: '3',
-    title: 'Schedule team meeting',
-    description: 'Organize weekly sync with design and development teams to discuss project progress.',
-    status: 'completed',
-    dueDate: null,
-    priority: 'low',
-    tags: ['team', 'communication'],
-    estimatedTime: 30,
-    maxPoints: 25
-  },
-  {
-    id: '4',
-    title: 'Research new tools',
-    description: 'Evaluate project management software options that integrate with our current workflow.',
-    status: 'pending',
-    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    priority: 'medium',
-    tags: ['research'],
-    estimatedTime: 90,
-    maxPoints: 65
-  }
-];
+interface TaskViewerProps {
+  tasks: TaskType[];
+  onCreateTask: (taskData: Omit<TaskType, 'id' | 'user'>) => Promise<void>;
+  onUpdateTask: (id: string, updatedData: Partial<TaskType>) => Promise<void>;
+  onDeleteTask: (id: string) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+}
 
-const TaskViewer = () => {
-  const [tasks, setTasks] = useState<TaskType[]>(SAMPLE_TASKS);
+const TaskViewer: React.FC<TaskViewerProps> = ({
+  tasks,
+  onCreateTask,
+  onUpdateTask,
+  onDeleteTask,
+  loading,
+  error
+}) => {
   const [activeFilter, setActiveFilter] = useState<'all' | TaskStatus>('all');
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -74,39 +41,50 @@ const TaskViewer = () => {
     setActiveFilter(filter);
   };
 
-  const handleStatusChange = (taskId: string, newStatus: TaskStatus) => {
-    setTasks(tasks.map(task => task.id === taskId ? {
-      ...task,
-      status: newStatus
-    } : task));
-  };
-
-  const handleDeleteTask = (taskId: string) => {
-    if (selectedTask && selectedTask.id === taskId) {
-      setSelectedTask(null);
+  const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
+    try {
+      await onUpdateTask(taskId, { status: newStatus });
+      // The parent component will update the tasks list
+    } catch (error) {
+      console.error('Failed to update task status:', error);
     }
-    setTasks(tasks.filter(task => task.id !== taskId));
   };
 
-  const handleAddTask = (newTask?: TaskType) => {
-    if (newTask) {
-      // Called from KanbanBoard
-      setTasks([newTask, ...tasks]);
-    } else {
-      // Called from TaskList
-      if (!newTaskTitle.trim()) return;
-      const newTask: TaskType = {
-        id: Date.now().toString(),
-        title: newTaskTitle,
-        description: '',
-        status: 'pending',
-        dueDate: null,
-        priority: 'medium',
-        tags: []
-      };
-      setTasks([newTask, ...tasks]);
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await onDeleteTask(taskId);
+      if (selectedTask && selectedTask.id === taskId) {
+        setSelectedTask(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
+  };
+
+  const getDefaultTaskData = (title: string): Omit<TaskType, 'id' | 'user'> => ({
+    title,
+    description: '',
+    status: 'pending',
+    priority: 'n',
+    est_points: 10,
+    est_time: 30,
+    due_date: null,
+    start_date: null,
+    completed_date: null,
+    category: 'p'
+  });
+
+  const handleAddTask = async () => {
+    if (!newTaskTitle.trim()) return;
+    
+    try {
+
+      
+      await onCreateTask(getDefaultTaskData(newTaskTitle));
       setNewTaskTitle('');
       setIsAddingTask(false);
+    } catch (error) {
+      console.error('Failed to create task:', error);
     }
   };
 
@@ -116,34 +94,37 @@ const TaskViewer = () => {
 
   const handleTaskSelect = (task: TaskType) => {
     setSelectedTask(task);
-    setTaskDescription(task.description);
+    setTaskDescription(task.description || '');
   };
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTaskDescription(e.target.value);
+  const handleDescriptionChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newDescription = e.target.value;
+    setTaskDescription(newDescription);
+    
     if (selectedTask) {
-      setTasks(tasks.map(task => task.id === selectedTask.id ? {
-        ...task,
-        description: e.target.value
-      } : task));
+      try {
+        await onUpdateTask(selectedTask.id, { description: newDescription });
+      } catch (error) {
+        console.error('Failed to update task description:', error);
+      }
     }
   };
 
-  const handleEstimationComplete = (time: number, maxPoints: number) => {
+  const handleEstimationComplete = async (time: number, maxPoints: number) => {
     if (selectedTask) {
-      setTasks(tasks.map(task => task.id === selectedTask.id ? {
-        ...task,
-        estimatedTime: time,
-        maxPoints: maxPoints
-      } : task));
-      
-      setSelectedTask({
-        ...selectedTask,
-        estimatedTime: time,
-        maxPoints: maxPoints
-      });
+      try {
+        await onUpdateTask(selectedTask.id, {
+          est_time: time,
+          est_points: maxPoints
+        });
+      } catch (error) {
+        console.error('Failed to update task estimation:', error);
+      }
     }
   };
+
+  if (loading) return <div className="flex justify-center p-8">Loading tasks...</div>;
+  if (error) return <div className="text-red-500 p-8">Error: {error}</div>;
 
   return (
     <div className="flex flex-col gap-8">
@@ -177,7 +158,7 @@ const TaskViewer = () => {
                 <AddTaskInput 
                   newTaskTitle={newTaskTitle}
                   onTitleChange={setNewTaskTitle}
-                  onAddTask={() => handleAddTask()}
+                  onAddTask={handleAddTask}
                   onCancel={() => setIsAddingTask(false)}
                 />
               )}
@@ -199,14 +180,13 @@ const TaskViewer = () => {
             onTaskStatusChange={handleStatusChange}
             onTaskSelect={handleTaskSelect}
             onDeleteTask={handleDeleteTask}
-            onAddTask={handleAddTask}
             selectedTaskId={selectedTask?.id}
           />
         </TabsContent>
         
-        <TabsContent value="analytics" className="mt-0 animate-fade-in">
-          <ProductivityAnalytics />
-        </TabsContent>
+        {/* <TabsContent value="analytics" className="mt-0 animate-fade-in">
+          <ProductivityAnalytics tasks={tasks} />
+        </TabsContent> */}
       </Tabs>
       
       {selectedTask && (

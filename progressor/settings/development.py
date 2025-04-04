@@ -16,7 +16,10 @@ DATABASES = {
         "NAME": env("POSTGRES_DB"),
         "USER": env("POSTGRES_USER"),
         "PASSWORD": env("POSTGRES_PASSWORD"),
-        "HOST": "localhost",#env("PG_HOST"),
+        "HOST": env("PG_HOST"),#"localhost",
         "PORT": env("PG_PORT"),
     }
 }
+# Add to your settings
+TRANSFORMERS_OFFLINE = 0
+HF_HUB_OFFLINE = 0

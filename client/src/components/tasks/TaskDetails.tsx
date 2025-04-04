@@ -30,13 +30,17 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
     low: 'text-blue-400'
   };
   
-  const formatDate = (date: Date | null) => {
+  const formatDate = (date: Date | string | null) => {
     if (!date) return 'No due date';
+    
+    // Convert string date to Date object if needed
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
-    }).format(date);
+    }).format(dateObj);
   };
   
   const formatTime = (minutes: number | undefined) => {
@@ -78,11 +82,11 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
           <div className="flex items-center">
             <Calendar size={14} className="mr-1" />
-            <span>{formatDate(task.dueDate)}</span>
+            <span>{formatDate(task.due_date)}</span>
           </div>
           <div className="flex items-center">
             <Clock size={14} className="mr-1" />
-            <span>{formatTime(task.estimatedTime)}</span>
+            <span>{formatTime(task.est_time)}</span>
           </div>
           <div className={`flex items-center ${priorityColors[task.priority]}`}>
             <Tag size={14} className="mr-1" />
@@ -91,16 +95,16 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
         </div>
       </div>
       
-      {task.maxPoints && (
+      {task.est_points && (
         <div className="p-4 border-b border-border">
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center">
-              <Trophy size={14} className={`mr-2 ${getTrophyColor(task.maxPoints)}`} />
+              <Trophy size={14} className={`mr-2 ${getTrophyColor(task.est_points)}`} />
               <h3 className="text-sm font-medium">Productivity Points</h3>
             </div>
-            <span className="text-sm font-medium">{task.maxPoints} pts</span>
+            <span className="text-sm font-medium">{task.est_points} pts</span>
           </div>
-          <Progress value={task.status === 'completed' ? 100 : task.status === 'in-progress' ? 50 : 0} className="h-2" />
+          <Progress value={task.status === 'completed' ? 100 : task.status === 'in_progress' ? 50 : 0} className="h-2" />
           <p className="text-xs text-muted-foreground mt-2">
             These points represent the maximum productivity value for completing this task.
           </p>
@@ -122,9 +126,9 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
                 onClick={showBothEstimator}
               >
                 <Trophy size={14} className="mr-1 text-amber-400" />
-                {!task.estimatedTime && !task.maxPoints ? 'Estimate Task' : 'Re-estimate All'}
+                {!task.est_time && !task.est_points ? 'Estimate Task' : 'Re-estimate All'}
               </Button>
-              {task.estimatedTime && (
+              {task.est_time && (
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -135,7 +139,7 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
                   Re-estimate Time
                 </Button>
               )}
-              {task.maxPoints && (
+              {task.est_points && (
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -155,8 +159,8 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
             taskTitle={task.title}
             taskDescription={description}
             onEstimationComplete={handleEstimationComplete}
-            initialTime={task.estimatedTime}
-            initialPoints={task.maxPoints}
+            initialTime={task.est_time}
+            initialPoints={task.est_points}
             estimateType={estimatorType}
           />
         ) : (
@@ -167,21 +171,6 @@ export const TaskDetails: React.FC<TaskDetailsProps> = ({
         )}
       </div>
       
-      {task.tags && task.tags.length > 0 && (
-        <div className="p-4">
-          <h3 className="text-sm font-medium mb-2">Tags</h3>
-          <div className="flex flex-wrap gap-2">
-            {task.tags.map((tag, index) => (
-              <span 
-                key={index}
-                className="px-2 py-1 text-xs rounded-full bg-secondary/60 text-secondary-foreground"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
     </GlassCard>
   );
 };

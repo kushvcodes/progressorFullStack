@@ -30,7 +30,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   const { toast } = useToast();
   
   const pendingTasks = tasks.filter(task => task.status === 'pending');
-  const inProgressTasks = tasks.filter(task => task.status === 'in-progress');
+  const inProgressTasks = tasks.filter(task => task.status === 'in_progress');
   const completedTasks = tasks.filter(task => task.status === 'completed');
   
   const handleAddTask = () => {
@@ -43,18 +43,22 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
       return;
     }
     
-    const newTask: TaskType = {
+    const newTask: Omit<TaskType, 'user'> = {
       id: Date.now().toString(),
       title: newTaskTitle,
       description: '',
       status: newTaskStatus,
-      dueDate: null,
-      priority: 'medium',
-      tags: []
+      priority: 'n',
+      category: 'w',  // Default category (work)
+      est_points: 0,  // Default estimation points
+      est_time: 0,    // Default estimated time
+      due_date: '',   // Empty due date
+      start_date: '',  // Empty start date
+      completed_date: ''  // Empty completed date
     };
     
     if (onAddTask) {
-      onAddTask(newTask);
+      onAddTask(newTask as TaskType);
       toast({
         title: "Task created",
         description: `"${newTaskTitle}" has been added to ${newTaskStatus} tasks`
@@ -104,8 +108,8 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
               <Button 
                 variant="outline" 
                 size="sm" 
-                className={`flex-1 ${newTaskStatus === 'in-progress' ? 'bg-primary/10 border-primary' : ''}`}
-                onClick={() => setNewTaskStatus('in-progress')}
+                className={`flex-1 ${newTaskStatus === 'in_progress' ? 'bg-primary/10 border-primary' : ''}`}
+                onClick={() => setNewTaskStatus('in_progress')}
               >
                 In Progress
               </Button>
@@ -144,7 +148,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
         <KanbanColumn
           title="In Progress"
           tasks={inProgressTasks}
-          status="in-progress"
+          status="in_progress"
           onTaskStatusChange={onTaskStatusChange}
           onTaskSelect={onTaskSelect}
           onDeleteTask={onDeleteTask}

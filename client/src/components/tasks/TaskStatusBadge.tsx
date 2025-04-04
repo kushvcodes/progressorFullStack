@@ -16,7 +16,7 @@ export const TaskStatusBadge: React.FC<TaskStatusBadgeProps> = ({
     switch (status) {
       case 'completed':
         return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'in-progress':
+      case 'in_progress':
         return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
       default:
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
@@ -27,7 +27,7 @@ export const TaskStatusBadge: React.FC<TaskStatusBadgeProps> = ({
     switch (status) {
       case 'completed':
         return 'Completed';
-      case 'in-progress':
+      case 'in_progress':
         return 'In Progress';
       default:
         return 'Pending';

@@ -1,30 +1,28 @@
-FROM python:3.10.0-slim-buster
+# syntax=docker/dockerfile:1.4
+FROM python:3.12-slim-bookworm
 
 ENV APP_HOME=/app
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 WORKDIR $APP_HOME
 
-LABEL maintainer='rharsh495@gmail.com'
-LABEL decription="Development image for ProgressorAI"
+# Install system dependencies
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        libpq-dev \
+        gettext \
+        netcat-openbsd \
+        gcc \
+        postgresql-client && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONDONTWRITEBYTECODE 1
-
-ENV PYTHONUNBUFFERED 1
-
-RUN apt-get update \
-  && apt-get install -y build-essential \
-  && apt-get install -y libpq-dev \
-  && apt-get install -y gettext \
-  && apt-get -y install netcat gcc postgresql \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install --upgrade pip
-
-COPY ./requirements.txt /app/requirements.txt 
-
-RUN pip3 install -r requirements.txt
+# Install Python dependencies without upgrading pip
+COPY requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir -r requirements.txt
 
 COPY ./docker/local/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint

@@ -160,6 +160,8 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env("SIGNING_KEY"),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    'ROTATE_REFRESH_TOKENS': True,  # Issues new refresh token on refresh
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 DJOSER = {
@@ -236,3 +238,9 @@ logging.config.dictConfig(
         },
     }
 )
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}

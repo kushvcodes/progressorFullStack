@@ -1,11 +1,16 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { authService } from './AuthService';
+import { authService } from './authService';
 
 type User = {
-  access: string;
-  refresh: string;
+  access?: string;
+  refresh?: string;
+  name?: string;
+  email?: string;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
 };
 
 type AuthContextType = {
@@ -40,10 +45,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isLoggedIn = !!user;
 
+  // Check for existing token and fetch user profile on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        try {
+          const userProfile = await authService.getUserProfile();
+          setUser({
+            access: token,
+            refresh: localStorage.getItem("refresh_token") || undefined,
+            name: `${userProfile.first_name} ${userProfile.last_name}`.trim() || userProfile.username,
+            email: userProfile.email,
+            username: userProfile.username,
+            first_name: userProfile.first_name,
+            last_name: userProfile.last_name
+          });
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+          // If token is invalid, clear it
+          authService.logout();
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   const handleLogin = async (email: string, password: string) => {
     try {
       const tokens = await authService.login({ email, password });
-      setUser(tokens);
+      
+      // After login, fetch the user profile
+      const userProfile = await authService.getUserProfile();
+      
+      setUser({
+        access: tokens.access,
+        refresh: tokens.refresh,
+        name: `${userProfile.first_name} ${userProfile.last_name}`.trim() || userProfile.username,
+        email: userProfile.email,
+        username: userProfile.username,
+        first_name: userProfile.first_name,
+        last_name: userProfile.last_name
+      });
+      
       navigate('/');
       toast({
         title: "Login successful",

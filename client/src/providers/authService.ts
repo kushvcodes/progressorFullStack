@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -8,6 +8,33 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Add a function to get the authenticated user's profile
+const getUserProfile = async () => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    throw new Error("No authentication token found");
+  }
+  
+  try {
+    const response = await api.get("/api/v1/auth/users/me/", {
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("Server response:", error.response.data);
+      // If the token is invalid or expired, clear it
+      if (error.response.status === 401) {
+        logout();
+      }
+    }
+    throw error;
+  }
+};
 
 const register = async (userData: {
   username: string;
@@ -44,4 +71,4 @@ const activate = async (userData: { uid: string; token: string }) => {
   return response.data;
 };
 
-export const authService = { register, login, logout, activate };
+export const authService = { register, login, logout, activate, getUserProfile };

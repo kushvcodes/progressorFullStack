@@ -28,7 +28,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
     switch (status) {
       case 'completed':
         return <CheckCircle2 size={16} className="text-green-400" />;
-      case 'in-progress':
+      case 'in_progress':
         return <Clock size={16} className="text-amber-400" />;
       default:
         return <Circle size={16} className="text-muted-foreground" />;

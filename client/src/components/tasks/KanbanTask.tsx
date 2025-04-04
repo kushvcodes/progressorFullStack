@@ -17,12 +17,16 @@ export const KanbanTask: React.FC<KanbanTaskProps> = ({
   selected = false,
   onClick 
 }) => {
-  const formatDate = (date: Date | null) => {
+  const formatDate = (date: Date | string | null) => {
     if (!date) return '';
+    
+    // Convert string date to Date object if needed
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric'
-    }).format(date);
+    }).format(dateObj);
   };
   
   const priorityClasses = {
@@ -45,26 +49,26 @@ export const KanbanTask: React.FC<KanbanTaskProps> = ({
       <div className="flex flex-wrap gap-1.5 items-center text-xs text-muted-foreground">
         <TaskStatusBadge status={task.status} size="xs" />
         
-        {task.dueDate && (
+        {task.due_date && (
           <div className="flex items-center">
             <Clock size={10} className="mr-0.5" />
-            <span>{formatDate(task.dueDate)}</span>
+            <span>{formatDate(task.due_date)}</span>
           </div>
         )}
         
-        {task.maxPoints && (
+        {task.est_points && (
           <div className="flex items-center">
-            <Trophy size={10} className={cn("mr-0.5", getTrophyColor(task.maxPoints))} />
-            <span>{task.maxPoints} pts</span>
+            <Trophy size={10} className={cn("mr-0.5", getTrophyColor(task.est_points))} />
+            <span>{task.est_points} pts</span>
           </div>
         )}
         
-        {task.tags && task.tags.length > 0 && (
+        {/* {task.tags && task.tags.length > 0 && (
           <div className="flex items-center">
             <Tag size={10} className="mr-0.5" />
             <span>{task.tags[0]}{task.tags.length > 1 ? `+${task.tags.length - 1}` : ''}</span>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
