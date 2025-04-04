@@ -45,25 +45,26 @@ test-html:
 	docker compose exec api pytest -p no:warnings --cov=. --cov-report html
 
 flake8:
-	docker compose exec api flake8 .
+	docker compose exec api flake8 --exclude=migrations,venv,env,staticfiles,mediafiles apps progressor
 
+# Improved black commands with more exclusions and targeted directories
 black-check:
-	docker compose exec api black --check --exclude=migrations .
+	docker compose exec api black --check --exclude="migrations|venv|env|staticfiles|mediafiles" apps progressor
 
 black-diff:
-	docker compose exec api black --diff --exclude=migrations .
+	docker compose exec api black --diff --exclude="migrations|venv|env|staticfiles|mediafiles" apps progressor
 
 black:
-	docker compose exec api black --exclude=migrations .
+	docker compose exec api black --exclude="migrations|venv|env|staticfiles|mediafiles" apps progressor
 
 isort-check:
-	docker compose exec api isort . --check-only --skip env --skip migrations
+	docker compose exec api isort --check-only --skip migrations --skip venv --skip env --skip staticfiles --skip mediafiles apps progressor
 
 isort-diff:
-	docker compose exec api isort . --diff --skip env --skip migrations
+	docker compose exec api isort --diff --skip migrations --skip venv --skip env --skip staticfiles --skip mediafiles apps progressor
 
 isort:
-	docker compose exec api isort . --skip env --skip migrations
+	docker compose exec api isort --skip migrations --skip venv --skip env --skip staticfiles --skip mediafiles apps progressor
 
 #COMMANDS FOR LOCAL DJANGO DEV WITHOUT DOCKER
 

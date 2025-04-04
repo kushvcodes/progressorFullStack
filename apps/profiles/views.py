@@ -9,10 +9,12 @@ from .serializers import ProfileSerializer, UpdateProfileSerializer
 
 
 class GetProfileAPIView(APIView):
+    """API view to retrieve the current user's profile"""
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [ProfileJSONRenderer]
 
     def get(self, request):
+        """Get the authenticated user's profile"""
         user = self.request.user
         user_profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(user_profile, context={"request": request})
@@ -20,12 +22,13 @@ class GetProfileAPIView(APIView):
 
 
 class UpdateProfileAPIView(APIView):
+    """API view to update a user profile"""
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [ProfileJSONRenderer]
-
     serializer_class = UpdateProfileSerializer
 
     def patch(self, request, username):
+        """Update profile if it belongs to the authenticated user"""
         try:
             Profile.objects.get(user__username=username)
         except Profile.DoesNotExist:

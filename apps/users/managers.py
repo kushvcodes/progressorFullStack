@@ -1,4 +1,4 @@
-#users/managers.py
+# users/managers.py
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -6,7 +6,10 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
+    """Custom user manager for email-based authentication"""
+    
     def email_validator(self, email):
+        """Validate email format"""
         try:
             validate_email(email)
         except ValidationError:
@@ -15,6 +18,7 @@ class CustomUserManager(BaseUserManager):
     def create_user(
         self, username, first_name, last_name, email, password, **extra_fields
     ):
+        """Create and save a regular user with the given details"""
         if not username:
             raise ValueError(_("Users must submit a username"))
 
@@ -47,6 +51,7 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(
         self, username, first_name, last_name, email, password, **extra_fields
     ):
+        """Create and save a superuser with the given details"""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)

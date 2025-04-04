@@ -1,4 +1,4 @@
-#progressor/urls.py
+# progressor/urls.py
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -9,8 +9,8 @@ urlpatterns = [
     path("api/v1/auth/", include("djoser.urls")),
     path("api/v1/auth/", include("djoser.urls.jwt")),
     path("api/v1/profile/", include("apps.profiles.urls")),
-    path('', include('apps.chat.urls')),
-    path('', include('apps.tasks.urls')),
+    path("", include("apps.chat.urls")),
+    path("", include("apps.tasks.urls")),
 ]
 
 

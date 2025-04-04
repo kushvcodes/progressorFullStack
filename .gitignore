@@ -144,3 +144,12 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Test files
+testme.py
+
+# Secrets - never commit these!
+.env
+.env.*
+!.env.example
+secrets.yaml

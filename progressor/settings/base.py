@@ -26,9 +26,9 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 # Application definition
 
 DJANGO_APPS = [
-    'corsheaders',
-    'daphne',
-    'channels',
+    "corsheaders",
+    "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,12 +49,19 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
 ]
 
-LOCAL_APPS = ["apps.common", "apps.users", "apps.profiles", "apps.ratings", "apps.tasks", "apps.chat"]
+LOCAL_APPS = [
+    "apps.common",
+    "apps.users",
+    "apps.profiles",
+    "apps.ratings",
+    "apps.tasks",
+    "apps.chat",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -144,8 +151,8 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://192.168.1.249:8080/',  # Add this line
-    'http://localhost:8080',   # Also add this line if you plan to use localhost
+    "http://192.168.1.249:8080/",  # Add this line
+    "http://localhost:8080",  # Also add this line if you plan to use localhost
 ]
 
 from datetime import timedelta
@@ -160,8 +167,8 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env("SIGNING_KEY"),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    'ROTATE_REFRESH_TOKENS': True,  # Issues new refresh token on refresh
-    'BLACKLIST_AFTER_ROTATION': True,
+    "ROTATE_REFRESH_TOKENS": True,  # Issues new refresh token on refresh
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 DJOSER = {
@@ -182,9 +189,9 @@ DJOSER = {
         "current_user": "apps.users.serializers.UserSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
-    'PERMISSIONS': {
-        'user_create': ['rest_framework.permissions.AllowAny'],
-    }
+    "PERMISSIONS": {
+        "user_create": ["rest_framework.permissions.AllowAny"],
+    },
 }
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
