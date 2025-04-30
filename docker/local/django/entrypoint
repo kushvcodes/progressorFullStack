@@ -31,4 +31,7 @@ until postgres_ready; do
 done
 >&2 echo "PostgreSQL is ready!!!!...:-)"
 
+# Ensure the logs directory exists
+mkdir -p /app/logs
+
 exec "$@"

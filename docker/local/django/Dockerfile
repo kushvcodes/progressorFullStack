@@ -4,6 +4,7 @@ FROM python:3.12-slim-bookworm
 ENV APP_HOME=/app
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/logs  # Create the logs directory
 WORKDIR $APP_HOME
 
 # Install system dependencies

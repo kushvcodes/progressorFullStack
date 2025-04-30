@@ -9,9 +9,9 @@ export default defineConfig(({ mode }) => ({
     host: "0.0.0.0", // Allow connections from all hosts
     port: 8080,
     hmr: {
-      // Let Vite handle the WebSocket path automatically
-      host: 'localhost',
-      protocol: 'ws',
+      clientPort: 8080,
+      host: '0.0.0.0',
+      protocol: 'ws'
     },
   },
   plugins: [
