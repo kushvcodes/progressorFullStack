@@ -93,6 +93,38 @@ services:
             - progressor-react
 
 
+    api2:
+        build:
+            context: .
+            dockerfile: ./docker/local/django/Dockerfile
+        command: /start
+        volumes:
+            - .:/app
+            - static_volume:/app/staticfiles
+            - media_volume:/app/mediafiles
+        env_file:
+            - .env
+        depends_on:
+            - postgres-db
+        networks:
+            - progressor-react
+
+    api3:
+        build:
+            context: .
+            dockerfile: ./docker/local/django/Dockerfile
+        command: /start
+        volumes:
+            - .:/app
+            - static_volume:/app/staticfiles
+            - media_volume:/app/mediafiles
+        env_file:
+            - .env
+        depends_on:
+            - postgres-db
+        networks:
+            - progressor-react
+
 networks:
     progressor-react:
         driver: bridge
