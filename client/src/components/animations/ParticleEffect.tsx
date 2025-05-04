@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import Particle from './Particle';
-import ShootingStar from './Shootingstar';
+import ShootingStar from './ShootingStar';
 import { ANIMATION_CONSTANTS } from './AnimationUtils';
 
 interface ParticleEffectProps {

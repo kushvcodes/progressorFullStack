@@ -11,20 +11,6 @@ from .managers import CustomUserManager
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model with email as the unique identifier"""
-    # Primary key using BigAutoField
-    pkid = models.BigAutoField(primary_key=True, editable=False)
-    # UUID for public identification
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    # Username field
-    username = models.CharField(verbose_name=_("Username"), max_length=255, unique=True)
-    # First name field
-    first_name = models.CharField(
-        verbose_name=_("First Name"), max_length=50, default=username
-    )
-    # Last name field
-    last_name = models.CharField(verbose_name=_("Last Name"), max_length=50, default="")
-    # Email field (used as login identifier)
-    email = models.EmailField(verbose_name=_("Email Address"), unique=True)
     # Staff status
     is_staff = models.BooleanField(default=False)
     # Active status
@@ -55,5 +41,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name.title()} {self.last_name.title()}"
 
     def get_short_name(self):
-        """Return username as short name"""
+        """
+        Returns the username as a short identifier.
+        
+        Returns:
+            str: The username
+        """
         return self.username

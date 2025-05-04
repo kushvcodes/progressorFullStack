@@ -26,12 +26,12 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 # Application definition
 
 DJANGO_APPS = [
-    "corsheaders",
     "daphne",
+    "corsheaders",
+    "django.contrib.contenttypes",
     "channels",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -47,6 +47,7 @@ THIRD_PARTY_APPS = [
     "phonenumber_field",
     "djoser",
     "rest_framework_simplejwt",
+    "djcelery_email",
 ]
 
 LOCAL_APPS = [
@@ -120,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Africa/Kigali"
+TIME_ZONE = "Europe/Berlin"
 
 USE_I18N = True
 

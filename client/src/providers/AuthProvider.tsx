@@ -122,8 +122,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         re_password: confirmPassword
       });
       
-      // Auto-login after registration
-      await handleLogin(email, password);
+      toast({
+        title: "Verify your account!!",
+        description: "Check your email for verification link",
+      });
     } catch (error) {
       toast({
         title: "Registration failed",

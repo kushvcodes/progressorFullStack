@@ -56,7 +56,6 @@ const Signup = () => {
         formData.password,
         formData.confirmPassword
       );
-      navigate('/');
     } catch (error) {
       // Error handling is done in AuthProvider
     } finally {

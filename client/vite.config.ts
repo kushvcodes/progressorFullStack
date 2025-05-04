@@ -9,8 +9,8 @@ export default defineConfig(({ mode }) => ({
     host: "0.0.0.0", // Allow connections from all hosts
     port: 8080,
     hmr: {
-      clientPort: 8080,
-      host: '0.0.0.0',
+      // clientPort: 8080,
+      // host: 'localhost',
       protocol: 'ws'
     },
   },

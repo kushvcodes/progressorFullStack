@@ -1,9 +1,18 @@
+"""
+Command Processor Module
+
+Handles processing of chat commands and task-related operations.
+Includes AI-powered task creation, categorization and prioritization.
+"""
+
+# Standard library imports
 import logging
 import re
 from datetime import datetime, timedelta
 from difflib import get_close_matches
 from typing import Optional, Tuple
 
+# Third-party imports
 import requests
 import torch
 from django.core.cache import cache
@@ -11,31 +20,43 @@ from django.utils import timezone
 from google import genai
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
+# Local application imports
 from apps.tasks.models import Task
 
+# Constants
+# -----------------------------------------------------------------------------
 # Setup logging
 logger = logging.getLogger(__name__)
 
-# Initialize Gemini client
+# Initialize Gemini client (AI service)
 gemini_client = genai.Client(api_key="AIzaSyDtp_dY_SFfprBzIyFiLVnlWnfQKlXWHnU")
 
 # Supported command list
 SUPPORTED_COMMANDS = {
+    # Task management
     "@task",
     "@delete",
     "@update",
+    
+    # Task viewing
     "@show",
     "@pending",
     "@progress",
     "@complete",
+    
+    # Priority filters
     "@high",
     "@low",
     "@normal",
     "@veryhigh",
     "@verylow",
+    
+    # Time filters
     "@today",
     "@tomorrow",
     "@missed",
+    
+    # Help
     "@help",
 }
 

@@ -1,18 +1,30 @@
+"""
+WebSocket Consumer for Chat Functionality
+
+Handles real-time chat connections between users and AI assistant.
+Manages WebSocket connections, message processing and AI responses.
+"""
+
+# Standard library imports
 import asyncio
 import json
 import logging
 from datetime import datetime
 
+# Third-party imports
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
 from google import genai
 
+# Local application imports
 from .command_processor import process_message
 from .models import Message
 
+# Setup logging
 logger = logging.getLogger(__name__)
 
+# Get user model
 User = get_user_model()
 
 

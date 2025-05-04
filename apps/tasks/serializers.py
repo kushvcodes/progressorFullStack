@@ -4,7 +4,15 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    """Serializer for Task model with proper field handling"""
+    """
+    Serializer for the Task model that handles serialization/deserialization.
+    
+    Provides:
+    - String representation of related user (username instead of ID)
+    - Field-level validation
+    - Model instance creation/update
+    
+    """
     user = serializers.StringRelatedField(
         read_only=True
     )  # Display username instead of ID

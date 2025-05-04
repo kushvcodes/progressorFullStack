@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+# Corrected command: -A progressor moved before 'worker'
+watchmedo auto-restart -d progressor/ -p "*.py" -- celery -A progressor worker --loglevel=info

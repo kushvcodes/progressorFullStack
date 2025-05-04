@@ -78,4 +78,5 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ["email", "username", "first_name", "last_name"]
 
 
+# Register the custom User model with its admin configuration
 admin.site.register(User, UserAdmin)
