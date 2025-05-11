@@ -1,14 +1,34 @@
 # syntax=docker/dockerfile:1.4
-FROM node:20-alpine3.18
+# ----------------------------
+# BASE IMAGE SETUP
+# ----------------------------
+FROM node:20
 
+# ----------------------------
+# APPLICATION DIRECTORY SETUP
+# ----------------------------
 WORKDIR /app
 
-# Skip npm upgrade since the alpine image comes with compatible versions
+# ----------------------------
+# DEPENDENCY INSTALLATION
+# ----------------------------
+# Copy package files first for better layer caching
 COPY package*.json ./
 
+# Install dependencies with npm cache
 RUN --mount=type=cache,target=/root/.npm \
     npm install
 
+# ----------------------------
+# APPLICATION BUILD
+# ----------------------------
 COPY . .
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+# ----------------------------
+# RUNTIME CONFIGURATION
+# ----------------------------
+EXPOSE 8080
+
+# List /app/dist contents at runtime before starting serve
+CMD ./node_modules/.bin/serve -s /app/dist -l 8080

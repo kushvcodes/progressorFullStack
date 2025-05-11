@@ -16,40 +16,10 @@ services:
             - .env
         depends_on:
             - postgres-db
+            - redis
         networks:
             - progressor-react
 
-    api2:
-        build:
-            context: .
-            dockerfile: ./docker/local/django/Dockerfile
-        command: python3 manage.py runserver 0.0.0.0:8000
-        volumes:
-            - .:/app
-            - static_volume:/app/staticfiles
-            - media_volume:/app/mediafiles
-        env_file:
-            - .env
-        depends_on:
-            - postgres-db
-        networks:
-            - progressor-react
-
-    api3:
-        build:
-            context: .
-            dockerfile: ./docker/local/django/Dockerfile
-        command: python3 manage.py runserver 0.0.0.0:8000
-        volumes:
-            - .:/app
-            - static_volume:/app/staticfiles
-            - media_volume:/app/mediafiles
-        env_file:
-            - .env
-        depends_on:
-            - postgres-db
-        networks:
-            - progressor-react
 
     postgres-db:
         image: postgres:14.0-alpine
@@ -87,7 +57,14 @@ services:
             dockerfile: Dockerfile.dev
         restart: on-failure
         volumes:
-            - ./client:/app
+            - ./client/src:/app/src
+            - ./client/public:/app/public
+            - ./client/package.json:/app/package.json
+            - ./client/tsconfig.json:/app/tsconfig.json
+            - ./client/postcss.config.js:/app/postcss.config.js
+            - ./client/vite.config.js:/app/vite.config.js
+            - ./client/.tailwind.config.js:/app/.tailwind.config.js
+            - ./client/index.html:/app/index.html
             - /app/node_modules
         networks:
             - progressor-react
@@ -106,6 +83,7 @@ services:
             - .env
         depends_on:
             - postgres-db
+            - redis
         networks:
             - progressor-react
 
@@ -121,6 +99,44 @@ services:
         env_file:
             - .env
         depends_on:
+            - postgres-db
+            - redis
+        networks:
+            - progressor-react
+
+    redis:
+        image: redis:6.2.4-alpine
+        networks:
+            - progressor-react
+    
+    celery-worker:
+        build:
+            context: .
+            dockerfile: ./docker/local/django/Dockerfile
+        command: /start-celeryworker
+        volumes:
+            - .:/app
+        env_file:
+            - .env
+        depends_on:
+            - redis
+            - postgres-db
+        networks:
+            - progressor-react
+    
+    flower:
+        build:
+            context: .
+            dockerfile: ./docker/local/django/Dockerfile
+        command: /start-flower
+        volumes:
+            - .:/app
+        ports:
+            - "5557:5555"
+        env_file:
+            - .env
+        depends_on:
+            - redis
             - postgres-db
         networks:
             - progressor-react

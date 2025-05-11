@@ -29,9 +29,9 @@ const Logo: React.FC = () => {
         )}>|</span>
         <span className={cn(
           "text-xl font-semibold tracking-tight text-gradient bg-clip-text text-transparent ml-4 transition-all duration-700",
-          showText ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
+          showText ? "opacity-100 translate-x-0" : "opacity-100 -translate-x-2"
         )}>
-          rogressorAI
+          ProgressorAI
         </span>
       </div>
     </Link>
