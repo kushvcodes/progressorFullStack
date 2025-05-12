@@ -24,6 +24,7 @@ Create a `.env` file in the root directory(env.example for reference)
 make build  # If you have make installed
 # OR
 refere to ./makefile for commands
+(This step might take time, depending upon your system)
 ```
 
 ### 4. Wait for backend to initialize
@@ -31,7 +32,7 @@ The API server may take up to 5-7 minutes to start due to Daphne optimizations.
 
 ### 5. Create superuser
 ```bash
-make createsuperuser
+make superuser
 # OR
 docker-compose exec api python manage.py createsuperuser
 ```
@@ -40,7 +41,7 @@ docker-compose exec api python manage.py createsuperuser
 - URL: http://localhost:8080/supersecret
 - Login with your superuser credentials
 
-### 7. Create initial user
+### 7. Create initial user(IMPORTANT)
 Create a user with these details(or with python shell if you want to use python django shell):
 - Name: AI
 - Email: AI@progressor.com
