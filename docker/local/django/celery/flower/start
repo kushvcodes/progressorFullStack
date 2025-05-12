@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -o errexit
+
+set -o nounset
+
+
+worker_ready(){
+    celery -A progressor inspect ping
+}
+
+until worker_ready; do 
+    >&2 echo 'Celery workers not available :-('
+    sleep 1
+
+done
+>&2 echo 'Celery workers are available and ready!...:-)'
+
+celery -A progressor flower --port=5555 --address=0.0.0.0 --broker="${CELERY_BROKER}"

@@ -109,4 +109,10 @@ uritemplate
 urllib3
 websockets
 zope.interface
-
+redis
+celery
+flower
+django-celery-email
+argh
+pyYAML
+watchdog
